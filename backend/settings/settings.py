@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
     'rest_framework',
+    'django_filters',
+    'core',
     'users',
     'recipes',
 ]
@@ -137,7 +139,7 @@ REST_FRAMEWORK = {
     ),
 
     'PAGE_SIZE': 5,
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.LimitPagination',
 }
 
 SIMPLE_JWT = {
