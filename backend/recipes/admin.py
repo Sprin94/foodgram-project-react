@@ -12,7 +12,7 @@ class TagAdmin(admin.ModelAdmin):
 
 class RecipeIngredientInline(admin.StackedInline):
     model = RecipeIngredient
-    list_display = ('ingredient', 'count',)
+    list_display = ('ingredient', 'aount',)
     readonly_fields = ('measurement_unit_display',)
 
     def measurement_unit_display(self, obj):

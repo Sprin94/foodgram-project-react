@@ -6,9 +6,9 @@ from django.db import models
 User = get_user_model()
 
 
-def count_validation(value):
+def amount_validation(value):
     if value <= 0:
-        raise ValidationError('Count must be > 0 ')
+        raise ValidationError('Amount must be > 0 ')
 
 
 class Tag(models.Model):
@@ -112,11 +112,11 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Ингридиент',
     )
-    count = models.DecimalField(
+    amount = models.DecimalField(
         verbose_name='Количество',
         max_digits=7,
         decimal_places=2,
-        validators=[count_validation]
+        validators=[amount_validation]
     )
 
     class Meta:
