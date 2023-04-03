@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 
+
 api_urlpatterns = [
     path(
         '',
         include(('recipes.api.urls', 'recipes')),
     ),
-    path('users/', include(('users.api.urls', 'users'))),
+    path('', include(('users.api.urls', 'users'))),
 ]
 
 urlpatterns = [

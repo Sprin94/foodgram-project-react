@@ -1,8 +1,7 @@
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
+
 from django.db import models
 
 
@@ -32,6 +31,8 @@ class User(AbstractUser):
         unique=True,
         max_length=254,
     )
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.username
