@@ -6,7 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import authenticate
 
-from recipes.models import Recipe
+from recipes.api import serializers as recipe_serializers
 from users.models import User, Follow
 
 
@@ -102,17 +102,6 @@ class CustomAuthTokenSerializer(Serializer):
         return attrs
 
 
-class RecipeFollowSerializer(ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time',
-        )
-
-
 class FollowSerializer(UserSerializer):
     recipes = SerializerMethodField()
     recipes_count = SerializerMethodField()
@@ -137,4 +126,5 @@ class FollowSerializer(UserSerializer):
         recipes = obj.recipes.all()
         if recipes_limit:
             recipes = recipes[:int(recipes_limit)]
-        return RecipeFollowSerializer(recipes, many=True).data
+        return recipe_serializers.RecipeInlineSerializer(
+            recipes, many=True).data

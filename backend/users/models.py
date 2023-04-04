@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
 
@@ -8,6 +8,35 @@ from django.db import models
 def username_not_me(username):
     if username == 'me':
         raise ValidationError('username не может быть "me"')
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password, first_name='', last_name=''):
+        """ Создает и возвращает пользователя с email и именем. """
+
+        if email is None:
+            raise TypeError('Users must have an email address.')
+
+        user = self.model(
+            first_name=first_name,
+            last_name=last_name,
+            email=self.normalize_email(email),
+        )
+
+        user.set_password(password)
+        user.is_superuser = False
+        user.is_staff = False
+        user.save()
+        return user
+
+    def create_superuser(self, email, password):
+        """ Создает и возвращает пользователя с привилегиями суперадмина."""
+
+        user = self.create_user(email, password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+        return user
 
 
 class User(AbstractUser):
@@ -33,6 +62,8 @@ class User(AbstractUser):
     )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
     def __str__(self):
         return self.username
