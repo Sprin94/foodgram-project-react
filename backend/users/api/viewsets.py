@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -16,6 +16,7 @@ from .serializers import (UserSerializer, CustomAuthTokenSerializer,
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
+    permission_classes = (AllowAny,)
 
     def get_serializer_class(self):
         if self.action == 'subscribe':
@@ -99,6 +100,7 @@ class UserViewSet(ModelViewSet):
 
 class CustomAuthToken(ObtainAuthToken):
     serializer_class = CustomAuthTokenSerializer
+    parser_classes = (AllowAny,)
 
 
 class Logout(APIView):

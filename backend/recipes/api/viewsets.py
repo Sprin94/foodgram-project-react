@@ -2,9 +2,10 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, filters
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
 
 from recipes.api.serializers import (
     TagSerializer, GetRecipeSerializer, IngredientSerializer,
@@ -29,11 +30,13 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     pagination_class = None
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^name',)
 
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    # permission_classes = (AuthorOrReadOnly,)
+    permission_classes = (AuthorOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete',
                          'head', 'options', 'trace')
     filter_backends = (DjangoFilterBackend,)
@@ -71,7 +74,8 @@ class RecipeViewSet(ModelViewSet):
             return GetRecipeSerializer
         return CreateRecipeSerializer
 
-    @action(detail=True, methods=('POST', 'DELETE'), url_path='favorite')
+    @action(detail=True, methods=('POST', 'DELETE'), url_path='favorite',
+            permission_classes=(IsAuthenticated,))
     def favorite(self, request, pk):
         data = {'user': request.user.id,
                 'recipe': pk}
@@ -91,7 +95,8 @@ class RecipeViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({'errors': 'Вы не добавили рецепт в избранное'})
 
-    @action(detail=True, methods=('POST', 'DELETE'), url_path='shopping_cart')
+    @action(detail=True, methods=('POST', 'DELETE'), url_path='shopping_cart',
+            permission_classes=(IsAuthenticated,))
     def shopping_cart(self, request, pk):
         data = {'user': request.user.id,
                 'recipe': pk}
@@ -110,7 +115,8 @@ class RecipeViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({'error': 'Вы не добавляли рецепт в список покупок'})
 
-    @action(detail=False, methods=('GET',), url_path='download_shopping_cart')
+    @action(detail=False, methods=('GET',), url_path='download_shopping_cart',
+            permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
         list = get_shopping_list(user=request.user)
         response = HttpResponse(list, content_type='text/plain')

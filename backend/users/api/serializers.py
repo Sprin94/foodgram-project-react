@@ -12,6 +12,7 @@ from users.models import User, Follow
 
 class UserSerializer(ModelSerializer):
     is_subscribed = SerializerMethodField()
+    password = CharField(write_only=True)
 
     class Meta:
         model = User
@@ -21,7 +22,8 @@ class UserSerializer(ModelSerializer):
             'email',
             'first_name',
             'last_name',
-            'is_subscribed'
+            'is_subscribed',
+            'password'
         )
 
     def get_is_subscribed(self, obj):
