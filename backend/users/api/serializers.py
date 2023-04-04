@@ -1,11 +1,12 @@
 from rest_framework.serializers import (
-    ModelSerializer, SlugRelatedField, CurrentUserDefault, ValidationError,
-    SerializerMethodField, Serializer, CharField,
+    ModelSerializer, PrimaryKeyRelatedField, ValidationError,
+    SerializerMethodField, Serializer, CharField
 )
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import authenticate
 
+from recipes.models import Recipe
 from users.models import User, Follow
 
 
@@ -43,21 +44,17 @@ class SetPasswordSerializer(Serializer):
     )
 
 
-class FollowSerializer(ModelSerializer):
-    user = SlugRelatedField(
-        slug_field='username',
-        queryset=Follow.objects.all(),
-        default=CurrentUserDefault()
+class FollowCreateSerializer(ModelSerializer):
+    user = PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
     )
-    following = SlugRelatedField(
-        slug_field='username',
-        queryset=User.objects.all()
+    following = PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
     )
 
     class Meta:
         model = Follow
         fields = '__all__'
-        read_only_fields = ('user',)
         validators = [
             UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
@@ -98,8 +95,46 @@ class CustomAuthTokenSerializer(Serializer):
                 msg = 'Unable to log in with provided credentials.'
                 raise ValidationError(msg, code='authorization')
         else:
-            msg = 'Must include "username" and "password".'
+            msg = 'Must include "email" and "password".'
             raise ValidationError(msg, code='authorization')
 
         attrs['user'] = user
         return attrs
+
+
+class RecipeFollowSerializer(ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time',
+        )
+
+
+class FollowSerializer(UserSerializer):
+    recipes = SerializerMethodField()
+    recipes_count = SerializerMethodField()
+
+    class Meta(UserSerializer.Meta):
+        fields = (
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count',
+        )
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
+
+    def get_recipes(self, obj):
+        recipes_limit = self.context.get('recipes_limit')
+        recipes = obj.recipes.all()
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
+        return RecipeFollowSerializer(recipes, many=True).data

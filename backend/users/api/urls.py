@@ -1,7 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from users.api.viewsets import UserViewSet, CustomAuthToken, Logout
+from users.api.viewsets import (
+    UserViewSet, CustomAuthToken, Logout
+)
 
 router_v1 = SimpleRouter()
 

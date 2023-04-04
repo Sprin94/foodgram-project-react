@@ -8,17 +8,22 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
 
-from users.models import User
+from users.models import User, Follow
 from .serializers import (UserSerializer, CustomAuthTokenSerializer,
-                          SetPasswordSerializer)
+                          SetPasswordSerializer, FollowSerializer,
+                          FollowCreateSerializer)
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
 
     def get_serializer_class(self):
+        if self.action == 'subscribe':
+            return FollowCreateSerializer
         if self.action == 'set_password':
             return SetPasswordSerializer
+        if self.action == 'subscriptions':
+            return FollowSerializer
         return UserSerializer
 
     @action(detail=False, methods=['GET'], url_path='me',
@@ -43,6 +48,53 @@ class UserViewSet(ModelViewSet):
             return Response({'detail': 'неверный пароль'},
                             status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='subscriptions',
+        permission_classes=(IsAuthenticated,),
+    )
+    def subscriptions(self, request):
+        users = (User.objects
+                 .filter(id__in=(Follow.objects
+                                 .filter(user=request.user)
+                                 .values_list('following', flat=True))))
+        users = self.filter_queryset(users)
+        serializer = self.get_serializer_class()(
+            users,
+            many=True,
+            context={'recipes_limit': request.GET.get('recipes_limit')}
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=['POST', 'DELETE'],
+        url_path='subscribe',
+        permission_classes=(IsAuthenticated,),
+    )
+    def subscribe(self, request, pk):
+        data = {'user': request.user.id,
+                'following': pk}
+        if request.method == 'POST':
+            serializer = self.get_serializer_class()(
+                data=data,
+                context={'request': request}
+            )
+            if serializer.is_valid():
+                serializer.save()
+                user = User.objects.get(pk=pk)
+                return Response(FollowSerializer(user).data,
+                                status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        follow = Follow.objects.filter(**data)
+        if follow:
+            follow.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'errors': 'Вы не подписаны'})
 
 
 class CustomAuthToken(ObtainAuthToken):
