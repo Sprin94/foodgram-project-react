@@ -102,6 +102,11 @@ class CustomAuthToken(ObtainAuthToken):
     serializer_class = CustomAuthTokenSerializer
     permission_classes = (AllowAny,)
 
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        response.status_code = status.HTTP_201_CREATED
+        return response
+
 
 class Logout(APIView):
     permission_classes = (IsAuthenticated,)
