@@ -14,7 +14,7 @@ services:
     ports:
       - '5432:5432'
   web:
-    image: sprin94/foodgram
+    image: sprin94/foodgram:latest
     restart: always
     volumes:
       - static_value:/app/static_nginx
@@ -28,7 +28,7 @@ services:
       - ./.env
   frontend:
     build:
-      images: sprin94/foodgram_front
+      images: sprin94/foodgram_front:latest
     volumes:
       - ./frontend/:/app/result_build/
   nginx:
