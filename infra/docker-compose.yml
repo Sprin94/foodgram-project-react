@@ -27,8 +27,7 @@ services:
     env_file:
       - ./.env
   frontend:
-    build:
-      images: sprin94/foodgram_front:latest
+    images: sprin94/foodgram_front:latest
     volumes:
       - ./frontend/:/app/result_build/
   nginx:
