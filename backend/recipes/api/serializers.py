@@ -1,14 +1,12 @@
-from rest_framework.serializers import (
-    ModelSerializer, CharField, DecimalField, SerializerMethodField,
-    PrimaryKeyRelatedField, Serializer
-)
-from django.contrib.auth import get_user_model
-from rest_framework.validators import UniqueTogetherValidator
-
 from core.fields import Base64Field
-from recipes.models import (Tag, Recipe, RecipeIngredient, Favorite,
-                            Ingredient, ShoppingList)
-
+from django.contrib.auth import get_user_model
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingList, Tag)
+from rest_framework.serializers import (CharField, DecimalField,
+                                        ModelSerializer,
+                                        PrimaryKeyRelatedField,
+                                        SerializerMethodField)
+from rest_framework.validators import UniqueTogetherValidator
 from users.api.serializers import UserSerializer
 
 User = get_user_model()
@@ -141,8 +139,7 @@ class CreateRecipeSerializer(GetRecipeSerializer):
                     ingredient=ingredient['id'],
                     amount=ingredient['amount']
                 )
-        obj = super().update(instance, validated_data)
-        return obj
+        return super().update(instance, validated_data)
 
 
 class FavoriteSerializer(ModelSerializer):

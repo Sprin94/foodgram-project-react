@@ -1,17 +1,17 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.decorators import action
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
-from rest_framework import status
 from django.contrib.auth.hashers import check_password
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+from users.models import Follow, User
 
-from users.models import User, Follow
-from .serializers import (UserSerializer, CustomAuthTokenSerializer,
-                          SetPasswordSerializer, FollowSerializer,
-                          FollowCreateSerializer)
+from .serializers import (CustomAuthTokenSerializer, FollowCreateSerializer,
+                          FollowSerializer, SetPasswordSerializer,
+                          UserSerializer)
 
 
 class UserViewSet(ModelViewSet):

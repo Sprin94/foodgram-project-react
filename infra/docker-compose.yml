@@ -42,6 +42,8 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/usr/src/code/static
       - media_value:/var/html/media
+    depends_on:
+      - web
 volumes:
   static_value:
   media_value:

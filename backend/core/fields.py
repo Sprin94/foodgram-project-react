@@ -1,7 +1,8 @@
 import base64
 import uuid
-from rest_framework.serializers import Field, ValidationError
+
 from django.core.files.base import ContentFile
+from rest_framework.serializers import Field, ValidationError
 
 
 def generate_uuid(max_length=12) -> str:

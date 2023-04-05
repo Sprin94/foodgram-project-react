@@ -1,7 +1,6 @@
 from django.contrib import admin
-
-from recipes.models import (Tag, Recipe, Ingredient, RecipeIngredient,
-                            Favorite, ShoppingList)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingList, Tag)
 
 
 @admin.register(Tag)
@@ -13,7 +12,7 @@ class TagAdmin(admin.ModelAdmin):
 
 class RecipeIngredientInline(admin.StackedInline):
     model = RecipeIngredient
-    list_display = ('ingredient', 'aount',)
+    list_display = ('ingredient', 'amount',)
     readonly_fields = ('measurement_unit_display',)
 
     def measurement_unit_display(self, obj):

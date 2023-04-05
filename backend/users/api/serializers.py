@@ -1,18 +1,14 @@
-from rest_framework.serializers import (
-    ModelSerializer, PrimaryKeyRelatedField, ValidationError,
-    SerializerMethodField, Serializer, CharField
-)
-from django.contrib.auth.password_validation import validate_password
-from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import authenticate
-
+from django.contrib.auth.password_validation import validate_password
 from recipes.api import serializers as recipe_serializers
-from users.models import User, Follow
+from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+from users.models import Follow, User
 
 
-class UserSerializer(ModelSerializer):
-    is_subscribed = SerializerMethodField()
-    password = CharField(write_only=True)
+class UserSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
@@ -40,23 +36,23 @@ class UserSerializer(ModelSerializer):
         return False
 
 
-class SetPasswordSerializer(Serializer):
-    new_password = CharField(
+class SetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(
         write_only=True,
         required=True,
         validators=[validate_password],
     )
-    current_password = CharField(
+    current_password = serializers.CharField(
         write_only=True,
         required=True,
     )
 
 
-class FollowCreateSerializer(ModelSerializer):
-    user = PrimaryKeyRelatedField(
+class FollowCreateSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
     )
-    following = PrimaryKeyRelatedField(
+    following = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
     )
 
@@ -73,21 +69,21 @@ class FollowCreateSerializer(ModelSerializer):
 
     def validate(self, attrs):
         if self.context.get('request').user == attrs.get('following'):
-            raise ValidationError(
+            raise serializers.ValidationError(
                 'Нельзя подписаться на самого себя')
         return super().validate(attrs)
 
 
-class CustomAuthTokenSerializer(Serializer):
-    email = CharField(
+class CustomAuthTokenSerializer(serializers.Serializer):
+    email = serializers.CharField(
         write_only=True
     )
-    password = CharField(
+    password = serializers.CharField(
         style={'input_type': 'password'},
         trim_whitespace=False,
         write_only=True
     )
-    token = CharField(
+    token = serializers.CharField(
         read_only=True
     )
 
@@ -101,18 +97,18 @@ class CustomAuthTokenSerializer(Serializer):
 
             if not user:
                 msg = 'Unable to log in with provided credentials.'
-                raise ValidationError(msg, code='authorization')
+                raise serializers.ValidationError(msg, code='authorization')
         else:
             msg = 'Must include "email" and "password".'
-            raise ValidationError(msg, code='authorization')
+            raise serializers.ValidationError(msg, code='authorization')
 
         attrs['user'] = user
         return attrs
 
 
 class FollowSerializer(UserSerializer):
-    recipes = SerializerMethodField()
-    recipes_count = SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
         fields = (
