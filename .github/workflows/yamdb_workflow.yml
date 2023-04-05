@@ -61,7 +61,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker-compose rm -f web
             sudo docker image rm sprin94/foodgram
             rm .env
             touch .env

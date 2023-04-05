@@ -30,7 +30,7 @@ class UserViewSet(ModelViewSet):
     @action(detail=False, methods=['GET'], url_path='me',
             permission_classes=(IsAuthenticated,))
     def me(self, request):
-        serializer = self.serializer_class(request.user)
+        serializer = self.get_serializer_class()(request.user)
         return Response(serializer.data)
 
     @action(detail=False, methods=['POST'], url_path='set_password',
@@ -103,9 +103,12 @@ class CustomAuthToken(ObtainAuthToken):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        response.status_code = status.HTTP_201_CREATED
-        return response
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'auth_token': token.key},
+                        status=status.HTTP_201_CREATED)
 
 
 class Logout(APIView):
