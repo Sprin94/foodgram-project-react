@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from datetime import timedelta
 
 load_dotenv('infra/.env')
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,7 +10,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='secret')
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=['*'])
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*').split(',')
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -25,12 +24,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'django_filters',
+    'corsheaders',
     'core',
     'users',
     'recipes',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -39,6 +41,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+]
+
 
 ROOT_URLCONF = 'settings.urls'
 
@@ -111,8 +118,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # STATICFILES_DIRS необходимо закомментировать или удалить
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_nginx')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

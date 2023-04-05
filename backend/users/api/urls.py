@@ -11,12 +11,12 @@ router_v1.register('users', UserViewSet, basename='users')
 
 auth_patterns = [
     path(
-        'login',
+        'login/',
         CustomAuthToken.as_view(),
         name='login'
     ),
     path(
-        'logout',
+        'logout/',
         Logout.as_view(),
         name='logout'
     ),

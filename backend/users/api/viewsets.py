@@ -100,7 +100,7 @@ class UserViewSet(ModelViewSet):
 
 class CustomAuthToken(ObtainAuthToken):
     serializer_class = CustomAuthTokenSerializer
-    parser_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
 
 
 class Logout(APIView):
