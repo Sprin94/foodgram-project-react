@@ -13,7 +13,8 @@ def generate_uuid(max_length=12) -> str:
 class Base64Field(Field):
     def to_internal_value(self, value: str):
         data = value.split(',')
-        if not data[0].startswith('data:image/png;base64'):
+        if (not data[0].startswith('data:image/')
+           and not data[0].endswith('base64')):
             raise ValidationError('Не корректная строка')
         image_data = base64.b64decode(data[1])
         name = generate_uuid()
