@@ -1,5 +1,5 @@
 from django_filters import BooleanFilter, CharFilter, FilterSet
-from recipes.models import Recipe
+from recipes.models import Recipe, Ingredient
 
 
 class RecipeFilter(FilterSet):
@@ -36,4 +36,17 @@ class RecipeFilter(FilterSet):
                 flat=True
             )
             return queryset.filter(id__in=favorited_recipe)
+        return queryset
+
+
+class IngredientFilter(FilterSet):
+    name = CharFilter(method='filter_name')
+
+    class Meta:
+        model = Ingredient
+        fields = ('name',)
+
+    def filter_name(self, queryset, name, value):
+        if value:
+            return queryset.filter(name__startswith=value)
         return queryset
