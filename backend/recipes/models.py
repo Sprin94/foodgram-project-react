@@ -86,7 +86,7 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='Название',
-        max_length=100,
+        max_length=255,
     )
     measurement_unit = models.CharField(
         verbose_name='Единицы измерения',
