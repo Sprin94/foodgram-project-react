@@ -65,7 +65,8 @@ class UserViewSet(ModelViewSet):
         serializer = self.get_serializer_class()(
             users,
             many=True,
-            context={'recipes_limit': request.GET.get('recipes_limit')}
+            context={'recipes_limit': request.GET.get('recipes_limit'),
+                     'request': request}
         )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
