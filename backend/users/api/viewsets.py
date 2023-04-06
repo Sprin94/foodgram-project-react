@@ -1,3 +1,4 @@
+from core.pagination import LimitPagination
 from django.contrib.auth.hashers import check_password
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -55,6 +56,7 @@ class UserViewSet(ModelViewSet):
         methods=['GET'],
         url_path='subscriptions',
         permission_classes=(IsAuthenticated,),
+        pagination_class=LimitPagination,
     )
     def subscriptions(self, request):
         users = (User.objects
@@ -62,13 +64,16 @@ class UserViewSet(ModelViewSet):
                                  .filter(user=request.user)
                                  .values_list('following', flat=True))))
         users = self.filter_queryset(users)
-        serializer = self.get_serializer_class()(
-            users,
-            many=True,
-            context={'recipes_limit': request.GET.get('recipes_limit'),
-                     'request': request}
-        )
-
+        page = self.paginate_queryset(users)
+        serializer = self.get_serializer_class()
+        context = {'recipes_limit': request.GET.get('recipes_limit'),
+                   'request': request}
+        if page is not None:
+            serializer = serializer(page,
+                                    many=True,
+                                    context=context)
+            return self.get_paginated_response(serializer.data)
+        serializer = serializer(users, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
