@@ -6,40 +6,45 @@ from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     prepopulated_fields = {
-        'slug': ('name',),
+        "slug": ("name",),
     }
 
 
 class RecipeIngredientInline(admin.StackedInline):
     model = RecipeIngredient
-    list_display = ('ingredient', 'amount',)
-    readonly_fields = ('measurement_unit_display',)
+    list_display = (
+        "ingredient",
+        "amount",
+    )
+    readonly_fields = ("measurement_unit_display",)
 
     def measurement_unit_display(self, obj):
         return obj.ingredient.measurement_unit
-    measurement_unit_display.short_description = 'Единица измерения'
+
+    measurement_unit_display.short_description = "Единица измерения"
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = [RecipeIngredientInline, ]
+    inlines = [
+        RecipeIngredientInline,
+    ]
     list_filter = (
-        'name',
-        'author__username',
-        'tags',
+        "name",
+        "author__username",
+        "tags",
     )
-    readonly_fields = ('get_count_favorites',)
+    readonly_fields = ("get_count_favorites",)
 
     def get_count_favorites(self, obj):
         return obj.users_favorite.count()
-    get_count_favorites.short_description = 'В избранном у'
+
+    get_count_favorites.short_description = "В избранном у"
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_filter = (
-        'name',
-    )
+    list_filter = ("name",)
 
 
 @admin.register(Favorite)

@@ -7,15 +7,13 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
-
-        print('Importing data from:', settings.BASE_DIR)
+        print("Importing data from:", settings.BASE_DIR)
 
         with open(
-            os.path.join(settings.BASE_DIR, 'ingredients.csv'),
-            'r',
-            encoding='UTF-8',
+            os.path.join(settings.BASE_DIR, "ingredients.csv"),
+            "r",
+            encoding="UTF-8",
         ) as ingredients:
             ingredients_file = csv.reader(ingredients)
             for counter, line in enumerate(ingredients_file):
@@ -32,4 +30,4 @@ class Command(BaseCommand):
                     obj.measurement_unit = measurement_unit
                     obj.save()
                 print(counter, created)
-        print('Finish')
+        print("Finish")

@@ -5,16 +5,16 @@ from django.db import models
 
 
 def username_not_me(username):
-    if username == 'me':
+    if username == "me":
         raise ValidationError('username не может быть "me"')
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, first_name='', last_name=''):
-        """ Создает и возвращает пользователя с email и именем. """
+    def create_user(self, email, password, first_name="", last_name=""):
+        """Создает и возвращает пользователя с email и именем."""
 
         if email is None:
-            raise TypeError('Users must have an email address.')
+            raise TypeError("Users must have an email address.")
 
         user = self.model(
             first_name=first_name,
@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password):
-        """ Создает и возвращает пользователя с привилегиями суперадмина."""
+        """Создает и возвращает пользователя с привилегиями суперадмина."""
 
         user = self.create_user(email, password)
         user.is_superuser = True
@@ -47,19 +47,19 @@ class User(AbstractUser):
         validators=[username_validator, username_not_me],
     )
     first_name = models.CharField(
-        verbose_name='Имя',
+        verbose_name="Имя",
         max_length=150,
     )
     last_name = models.CharField(
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         max_length=150,
     )
     email = models.EmailField(
-        verbose_name='Email',
+        verbose_name="Email",
         unique=True,
         max_length=254,
     )
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
@@ -68,24 +68,27 @@ class User(AbstractUser):
         return self.username
 
     class Meta(AbstractUser.Meta):
-        ordering = ('-id',)
+        ordering = ("-id",)
 
 
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
-        related_name='follower',
-        on_delete=models.CASCADE)
+        related_name="follower",
+        on_delete=models.CASCADE,
+    )
     following = models.ForeignKey(
         User,
-        related_name='following',
-        on_delete=models.CASCADE)
+        related_name="following",
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'following'],
-                name='unique_follow')
+                fields=["user", "following"],
+                name="unique_follow",
+            ),
         ]
