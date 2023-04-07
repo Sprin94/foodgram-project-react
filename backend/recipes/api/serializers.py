@@ -1,11 +1,20 @@
 from core.fields import Base64Field
 from django.contrib.auth import get_user_model
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingList, Tag)
-from rest_framework.serializers import (CharField, DecimalField,
-                                        ModelSerializer,
-                                        PrimaryKeyRelatedField,
-                                        SerializerMethodField)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingList,
+    Tag,
+)
+from rest_framework.serializers import (
+    CharField,
+    DecimalField,
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    SerializerMethodField,
+)
 from rest_framework.validators import UniqueTogetherValidator
 from users.api.serializers import UserSerializer
 
@@ -95,11 +104,6 @@ class GetRecipeSerializer(ModelSerializer):
 
 class RecipeIngredientSerializerInline(ModelSerializer):
     id = PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = DecimalField(
-        max_digits=7,
-        decimal_places=2,
-        write_only=True,
-    )
 
     class Meta:
         fields = ("id", "amount")

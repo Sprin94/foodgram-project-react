@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
             name='RecipeIngredient',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.DecimalField(decimal_places=2, max_digits=7, validators=[recipes.models.amount_validation], verbose_name='Количество')),
+                ('amount', models.DecimalField(decimal_places=2, max_digits=7, verbose_name='Количество')),
             ],
             options={
                 'verbose_name': 'Ингридиент рецепта',

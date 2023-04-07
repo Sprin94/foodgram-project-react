@@ -1,3 +1,5 @@
 [tool.black]
 line-length = 78
 exclude = 'migrations/'
+[tool.isort]
+profile = "black"

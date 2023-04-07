@@ -10,9 +10,13 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from users.models import Follow, User
 
-from .serializers import (CustomAuthTokenSerializer, FollowCreateSerializer,
-                          FollowSerializer, SetPasswordSerializer,
-                          UserSerializer)
+from .serializers import (
+    CustomAuthTokenSerializer,
+    FollowCreateSerializer,
+    FollowSerializer,
+    SetPasswordSerializer,
+    UserSerializer,
+)
 
 
 class UserViewSet(ModelViewSet):

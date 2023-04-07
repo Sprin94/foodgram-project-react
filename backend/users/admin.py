@@ -6,9 +6,9 @@ from .models import Follow, User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    pass
+    """Админ модель User."""
 
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    pass
+    """Админ модель Follow."""

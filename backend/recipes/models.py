@@ -2,14 +2,12 @@ import re
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 
 User = get_user_model()
 
-
-def amount_validation(value):
-    if value <= 0:
-        raise ValidationError("Amount must be > 0 ")
+HEX_PATTERN = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
 
 
 class Tag(models.Model):
@@ -38,7 +36,7 @@ class Tag(models.Model):
 
     def clean(self):
         super().clean()
-        if not re.match("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", self.color):
+        if not re.match(HEX_PATTERN, self.color):
             raise ValidationError("Invalid HEX color code")
 
 
@@ -118,7 +116,7 @@ class RecipeIngredient(models.Model):
         verbose_name="Количество",
         max_digits=7,
         decimal_places=2,
-        validators=[amount_validation],
+        validators=[MinValueValidator(0.01, "Amount must be > 0")],
     )
 
     class Meta:

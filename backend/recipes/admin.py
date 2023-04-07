@@ -1,16 +1,26 @@
 from django.contrib import admin
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingList, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingList,
+    Tag,
+)
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
+    """Админ модель Tag."""
+
     prepopulated_fields = {
         "slug": ("name",),
     }
 
 
 class RecipeIngredientInline(admin.StackedInline):
+    """Инлайн модель RecipeIngredient."""
+
     model = RecipeIngredient
     list_display = (
         "ingredient",
@@ -26,6 +36,8 @@ class RecipeIngredientInline(admin.StackedInline):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    """Админ модель Recipe."""
+
     inlines = [
         RecipeIngredientInline,
     ]
@@ -44,14 +56,16 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
+    """Админ модель Ingredient."""
+
     list_filter = ("name",)
 
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    pass
+    """Админ модель Favorite."""
 
 
 @admin.register(ShoppingList)
 class ShoppingListAdmin(admin.ModelAdmin):
-    pass
+    """Админ модель ShoppingList."""

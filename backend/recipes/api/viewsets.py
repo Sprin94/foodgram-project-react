@@ -1,13 +1,17 @@
-from core.permission import AuthorOrReadOnly
+from core.permission import IsAuthor
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.api.filterset import IngredientFilter, RecipeFilter
-from recipes.api.serializers import (CreateRecipeSerializer,
-                                     FavoriteSerializer, GetRecipeSerializer,
-                                     IngredientSerializer,
-                                     RecipeInlineSerializer,
-                                     ShoppingListSerializer, TagSerializer)
+from recipes.api.serializers import (
+    CreateRecipeSerializer,
+    FavoriteSerializer,
+    GetRecipeSerializer,
+    IngredientSerializer,
+    RecipeInlineSerializer,
+    ShoppingListSerializer,
+    TagSerializer,
+)
 from recipes.api.services import get_shopping_list
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingList, Tag
 from rest_framework import status
@@ -35,7 +39,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (AuthorOrReadOnly,)
+    permission_classes = (IsAuthor,)
     http_method_names = (
         "get",
         "post",
@@ -122,7 +126,10 @@ class RecipeViewSet(ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, pk):
-        data = {"user": request.user.id, "recipe": pk}
+        data = {
+            "user": request.user.id,
+            "recipe": pk,
+        }
         if request.method == "POST":
             serializer = ShoppingListSerializer(data=data)
             if serializer.is_valid():

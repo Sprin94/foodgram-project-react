@@ -12,7 +12,6 @@ def username_not_me(username):
 class UserManager(BaseUserManager):
     def create_user(self, email, password, first_name="", last_name=""):
         """Создает и возвращает пользователя с email и именем."""
-
         if email is None:
             raise TypeError("Users must have an email address.")
 
@@ -30,7 +29,6 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password):
         """Создает и возвращает пользователя с привилегиями суперадмина."""
-
         user = self.create_user(email, password)
         user.is_superuser = True
         user.is_staff = True
@@ -40,6 +38,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     "Пользовательская модель юзера"
+
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         max_length=150,
