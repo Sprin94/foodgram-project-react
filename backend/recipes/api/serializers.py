@@ -18,6 +18,7 @@ from rest_framework.serializers import (
 from rest_framework.validators import UniqueTogetherValidator
 from users.api.serializers import UserSerializer
 
+
 User = get_user_model()
 
 

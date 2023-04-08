@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
+
 load_dotenv("infra/.env")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

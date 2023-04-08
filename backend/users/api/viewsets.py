@@ -8,15 +8,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from users.models import Follow, User
-
-from .serializers import (
+from users.api.serializers import (
     CustomAuthTokenSerializer,
     FollowCreateSerializer,
     FollowSerializer,
     SetPasswordSerializer,
     UserSerializer,
 )
+from users.models import Follow, User
 
 
 class UserViewSet(ModelViewSet):
@@ -143,9 +142,7 @@ class Logout(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
-        """
-        Remove all auth tokens owned by request.user.
-        """
+        """Remove all auth tokens owned by request.user."""
         tokens = Token.objects.filter(user=request.user)
         for token in tokens:
             token.delete()

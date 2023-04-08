@@ -6,7 +6,7 @@ from rest_framework.serializers import Field, ValidationError
 
 
 def generate_uuid(max_length=12) -> str:
-    """Генерирует 12 символов UUID"""
+    """Генерирует 12 символов UUID."""
     return uuid.uuid4().hex[:max_length]
 
 

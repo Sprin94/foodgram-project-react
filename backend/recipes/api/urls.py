@@ -2,6 +2,7 @@ from django.urls import include, path
 from recipes.api.viewsets import IngredientViewSet, RecipeViewSet, TagViewSet
 from rest_framework.routers import SimpleRouter
 
+
 router_v1 = SimpleRouter()
 
 router_v1.register("tags", TagViewSet, basename="tags")

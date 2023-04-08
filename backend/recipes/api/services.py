@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import F, Sum
 from recipes.models import ShoppingList
 
+
 User = get_user_model()
 
 

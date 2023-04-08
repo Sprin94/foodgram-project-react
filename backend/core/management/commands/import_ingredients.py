@@ -1,4 +1,5 @@
 import csv
+import logging
 import os
 
 from django.conf import settings
@@ -6,9 +7,12 @@ from django.core.management.base import BaseCommand
 from recipes.models import Ingredient
 
 
+logger = logging.getLogger(__name__)
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        print("Importing data from:", settings.BASE_DIR)
+        logger.info("Importing data from: %s", settings.BASE_DIR)
 
         with open(
             os.path.join(settings.BASE_DIR, "ingredients.csv"),

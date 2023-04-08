@@ -1,6 +1,7 @@
 from core.permission import IsAuthor
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.api.filterset import IngredientFilter, RecipeFilter
 from recipes.api.serializers import (
@@ -19,6 +20,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+
 
 User = get_user_model()
 
@@ -104,7 +106,7 @@ class RecipeViewSet(ModelViewSet):
             serializer = FavoriteSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                recipe = Recipe.objects.get(pk=pk)
+                recipe = get_object_or_404(Recipe, pk=pk)
                 return Response(
                     RecipeInlineSerializer(recipe).data,
                     status=status.HTTP_201_CREATED,
@@ -134,7 +136,7 @@ class RecipeViewSet(ModelViewSet):
             serializer = ShoppingListSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                recipe = Recipe.objects.get(pk=pk)
+                recipe = get_object_or_404(Recipe, pk=pk)
                 return Response(
                     RecipeInlineSerializer(recipe).data,
                     status=status.HTTP_201_CREATED,

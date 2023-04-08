@@ -37,7 +37,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    "Пользовательская модель юзера"
+    """Пользовательская модель юзера."""
 
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
