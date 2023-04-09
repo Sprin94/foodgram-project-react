@@ -33,5 +33,5 @@ class Command(BaseCommand):
                     obj.name = name
                     obj.measurement_unit = measurement_unit
                     obj.save()
-                print(counter, created)
-        print("Finish")
+                logger.info("%s, %s", counter, created)
+        logger.info("Importing data: Finish")
