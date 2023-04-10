@@ -67,7 +67,7 @@ class RecipeViewSet(ModelViewSet):
             obj = serializer.save()
             return Response(
                 GetRecipeSerializer(obj, context=context).data,
-                status=status.HTTP_201_CREATED,
+                status=status.HTTP_200_OK
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

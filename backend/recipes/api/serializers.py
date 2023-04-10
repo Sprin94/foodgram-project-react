@@ -45,6 +45,10 @@ class TagSerializer(ModelSerializer):
 
 
 class RecipeIngredientSerializer(ModelSerializer):
+    id = PrimaryKeyRelatedField(
+        read_only=True,
+        source="ingredient.pk",
+    )
     name = CharField(
         read_only=True,
         source="ingredient.name",
