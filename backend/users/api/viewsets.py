@@ -49,12 +49,12 @@ class UserViewSet(ModelViewSet):
     )
     def set_password(self, request):
         user = request.user
-        serializer = self.get_serializer_class()(data=request.POST)
+        serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             if check_password(
-                request.POST["current_password"], user.password,
+                request.data["current_password"], user.password,
             ):
-                user.set_password(request.POST["new_password"])
+                user.set_password(request.data["new_password"])
                 user.save()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(
