@@ -8,7 +8,11 @@ from users.models import Follow, User
 
 class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(
+        write_only=True,
+        validators=[validate_password],
+        required=True,
+    )
 
     class Meta:
         model = User
