@@ -46,6 +46,14 @@ class RecipeAdmin(admin.ModelAdmin):
         "author__username",
         "tags",
     )
+    list_display = (
+        "name",
+        "author",
+    )
+    search_fields = (
+        "author__username",
+        "name",
+    )
     readonly_fields = ("get_count_favorites",)
 
     def get_count_favorites(self, obj):
@@ -59,6 +67,14 @@ class IngredientAdmin(admin.ModelAdmin):
     """Админ модель Ingredient."""
 
     list_filter = ("name",)
+    list_display = (
+        "name",
+        "measurement_unit",
+    )
+    search_fields = (
+        "name",
+        "measurement_unit",
+    )
 
 
 @admin.register(Favorite)
